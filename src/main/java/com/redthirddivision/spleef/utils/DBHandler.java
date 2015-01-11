@@ -16,6 +16,8 @@
 package com.redthirddivision.spleef.utils;
 
 import com.redthirddivision.bukkitgamelib.Game.ArenaState;
+import com.redthirddivision.bukkitgamelib.database.MySQL;
+import com.redthirddivision.bukkitgamelib.database.SQLite;
 import com.redthirddivision.bukkitgamelib.utils.Utils;
 import com.redthirddivision.spleef.Main;
 import com.redthirddivision.spleef.game.Spleef;
@@ -35,20 +37,37 @@ public class DBHandler {
 
     public static void setup() {
         try {
-            Main.getDB().executeStatement("CREATE TABLE IF NOT EXISTS `" + Config.SQL_TABLE_PREFIX.getString() + "arenas` ("
-                    + "`ID` INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT, "
-                    + "`name` varchar(64) NOT NULL, "
-                    + "`state` varchar(64) NOT NULL DEFAULT '" + ArenaState.WAITING.toString() + "', "
-                    + "`min` varchar(128) NOT NULL, "
-                    + "`max` varchar(128) NOT NULL, "
-                    + "`minplayers` INTEGER NOT NULL, "
-                    + "`maxplayers` INTEGER NOT NULL, "
-                    + "`sign` varchar(128) NOT NULL, "
-                    + "`spawnpoint` varchar(128) NOT NULL, "
-                    + "`lobbypoint` varchar(128) NOT NULL, "
-                    + "`spectatorpoint` varchar(128) NOT NULL, "
-                    + "UNIQUE KEY `name` (`name`)"
-                    + ");");
+            if (Main.getDB() instanceof MySQL) {
+
+                Main.getDB().executeStatement("CREATE TABLE IF NOT EXISTS `" + Config.SQL_TABLE_PREFIX.getString() + "arenas` ("
+                        + "`ID` INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT, "
+                        + "`name` varchar(64) NOT NULL, "
+                        + "`state` varchar(64) NOT NULL DEFAULT '" + ArenaState.WAITING.toString() + "', "
+                        + "`min` varchar(128) NOT NULL, "
+                        + "`max` varchar(128) NOT NULL, "
+                        + "`minplayers` INTEGER NOT NULL, "
+                        + "`maxplayers` INTEGER NOT NULL, "
+                        + "`sign` varchar(128) NOT NULL, "
+                        + "`spawnpoint` varchar(128) NOT NULL, "
+                        + "`lobbypoint` varchar(128) NOT NULL, "
+                        + "`spectatorpoint` varchar(128) NOT NULL, "
+                        + "UNIQUE KEY `name` (`name`)"
+                        + ");");
+            } else if (Main.getDB() instanceof SQLite) {
+                Main.getDB().executeStatement("CREATE TABLE IF NOT EXISTS `" + Config.SQL_TABLE_PREFIX.getString() + "arenas` ("
+                        + "`ID` INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, "
+                        + "`name` varchar(64) NOT NULL UNIQUE, "
+                        + "`state` varchar(64) NOT NULL DEFAULT '" + ArenaState.WAITING.toString() + "', "
+                        + "`min` varchar(128) NOT NULL, "
+                        + "`max` varchar(128) NOT NULL, "
+                        + "`minplayers` INTEGER NOT NULL, "
+                        + "`maxplayers` INTEGER NOT NULL, "
+                        + "`sign` varchar(128) NOT NULL, "
+                        + "`spawnpoint` varchar(128) NOT NULL, "
+                        + "`lobbypoint` varchar(128) NOT NULL, "
+                        + "`spectatorpoint` varchar(128) NOT NULL"
+                        + ");");
+            }
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
@@ -56,7 +75,7 @@ public class DBHandler {
 
     public static Spleef loadGame(int id) {
         try {
-            PreparedStatement st = Main.getDB().getPreparedStatement("SELECT * FROM `arenas` WHERE `id` = ? LIMIT 1;");
+            PreparedStatement st = Main.getDB().getPreparedStatement("SELECT * FROM `" + Config.SQL_TABLE_PREFIX.getString() + "arenas` WHERE `id` = ? LIMIT 1;");
             st.setInt(1, id);
             ResultSet rs = st.executeQuery();
             if (rs.next()) {

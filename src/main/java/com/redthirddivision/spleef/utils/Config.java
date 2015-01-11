@@ -14,9 +14,9 @@
  */
 package com.redthirddivision.spleef.utils;
 
+import com.google.common.base.Joiner;
 import java.io.File;
 import java.io.IOException;
-import net.minecraft.util.com.google.common.base.Joiner;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
