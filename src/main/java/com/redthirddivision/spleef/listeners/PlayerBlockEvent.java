@@ -16,6 +16,7 @@
 package com.redthirddivision.spleef.listeners;
 
 import com.redthirddivision.bukkitgamelib.Game;
+import com.redthirddivision.bukkitgamelib.utils.Utils;
 import com.redthirddivision.spleef.Main;
 import com.redthirddivision.spleef.game.Spleef;
 import com.redthirddivision.spleef.utils.Config;
@@ -44,10 +45,15 @@ public class PlayerBlockEvent implements Listener {
 
         Spleef spleef = (Spleef) g;
 
-        if (!spleef.containsBlock(e.getClickedBlock().getLocation())) e.setCancelled(true);
-
-        if (e.getItem().getType() != Material.valueOf(Config.SETTINGS_PLAYER_TOOL.getString())) {
+        if (!spleef.containsBlock(e.getClickedBlock().getLocation())) {
+            Utils.sendMessage(e.getPlayer(), Utils.MessageType.ERROR, "This block is out of the arena!", Main.getInstance());
             e.setCancelled(true);
+            return;
+        }
+
+        if (e.getItem() == null || e.getItem().getType() != Material.valueOf(Config.SETTINGS_PLAYER_TOOL.getString())) {
+            e.setCancelled(true);
+            return;
         }
 
         spleef.breakBlock(e.getClickedBlock());

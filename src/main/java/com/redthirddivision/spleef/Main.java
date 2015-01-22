@@ -16,7 +16,6 @@
 package com.redthirddivision.spleef;
 
 import com.redthirddivision.bukkitgamelib.Minigame;
-import com.redthirddivision.bukkitgamelib.command.CommandManager;
 import com.redthirddivision.bukkitgamelib.database.Database;
 import com.redthirddivision.bukkitgamelib.database.MySQL;
 import com.redthirddivision.bukkitgamelib.database.SQLite;
@@ -43,6 +42,7 @@ public class Main extends Minigame {
     @Override
     public void onPluginStart() {
         INSTANCE = this;
+        
         Config.load(this, "config.yml");
         
         if (Config.USE_MYSQL.getBoolean()) {
@@ -53,6 +53,7 @@ public class Main extends Minigame {
         }
         
         DBHandler.setup();
+        DBHandler.loadArenasFromDB();
         
         getServer().getPluginManager().registerEvents(new PlayerBlockEvent(), this);
         getServer().getPluginManager().registerEvents(new PlayerDamageListener(), this);

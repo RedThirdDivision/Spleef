@@ -21,6 +21,7 @@ import com.redthirddivision.bukkitgamelib.Minigame;
 import com.redthirddivision.bukkitgamelib.arena.PlayerData;
 import com.redthirddivision.bukkitgamelib.utils.Utils.MessageType;
 import com.redthirddivision.spleef.utils.BlockContainer;
+import com.redthirddivision.spleef.utils.Config;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -28,6 +29,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 /**
  * <strong>Project:</strong> Spleef <br>
@@ -68,6 +70,7 @@ public class Spleef extends Game {
             Location spawnPoint = this.spawn;
             spawnPoint.setX(r.nextInt(5) + spawnPoint.getBlockX());
             pd.getPlayer().teleport(spawnPoint);
+            pd.getPlayer().getInventory().addItem(new ItemStack(Material.valueOf(Config.SETTINGS_PLAYER_TOOL.getString())));
             sendMessage(pd.getPlayer(), MessageType.INFO, "Start digging!");
         }
     }
@@ -85,7 +88,6 @@ public class Spleef extends Game {
     }
 
     public void breakBlock(Block b) {
-        if (b.getType() != Material.GRASS) return;
         broken.add(new BlockContainer(b));
         b.setType(Material.AIR);
         b.breakNaturally();

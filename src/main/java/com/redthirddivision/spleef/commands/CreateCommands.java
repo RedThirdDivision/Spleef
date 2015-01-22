@@ -72,7 +72,7 @@ public class CreateCommands {
     @BaseCommand(command = "createspleef", sender = BaseCommand.Sender.PLAYER, permission = "spleef.admin", subCommand = "set")
     public CommandResult executeSet(Player sender, CommandArgs args) {
         if (create.sendHelp(sender, args)) return CommandResult.SUCCESS;
-        if (args.getLength() <= 1) return CommandResult.ERROR;
+        if (args.getLength() < 1) return CommandResult.ERROR;
 
         if (ArenaStore.isDefault()) {
             Utils.sendMessage(sender, Utils.MessageType.ERROR, "You have to enter the creation mode first! Use §a/" + args.getBase() + " help§7 to receive help.", Main.getInstance());
@@ -164,8 +164,11 @@ public class CreateCommands {
             return CommandResult.SUCCESS;
         }
 
-        DBHandler.createArena();
-        Utils.sendMessage(sender, Utils.MessageType.INFO, "The game has been loaded.", Main.getInstance());
+        if (DBHandler.createArena()) {
+            Utils.sendMessage(sender, Utils.MessageType.INFO, "The game has been loaded.", Main.getInstance());
+        } else {
+            Utils.sendMessage(sender, Utils.MessageType.ERROR, "The game could not be loaded. An error ocurred", Main.getInstance());
+        }
 
         ArenaStore.reset();
         return CommandResult.SUCCESS;

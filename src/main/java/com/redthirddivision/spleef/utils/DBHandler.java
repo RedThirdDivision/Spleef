@@ -56,7 +56,7 @@ public class DBHandler {
             } else if (Main.getDB() instanceof SQLite) {
                 Main.getDB().executeStatement("CREATE TABLE IF NOT EXISTS `" + Config.SQL_TABLE_PREFIX.getString() + "arenas` ("
                         + "`ID` INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, "
-                        + "`name` varchar(64) NOT NULL UNIQUE, "
+                        + "`name` varchar(64) NOT NULL, "
                         + "`state` varchar(64) NOT NULL DEFAULT '" + ArenaState.WAITING.toString() + "', "
                         + "`min` varchar(128) NOT NULL, "
                         + "`max` varchar(128) NOT NULL, "
@@ -117,7 +117,7 @@ public class DBHandler {
         }
     }
     
-    public static void createArena() {
+    public static boolean createArena() {
         try {
             int id = -1;
             PreparedStatement st = Main.getDB().getConnection().prepareStatement("INSERT INTO `" + Config.SQL_TABLE_PREFIX.getString() + "arenas` (`name`, `min`, `max`, `minplayers`, `maxplayers`, `sign`, `spawnpoint`, `lobbypoint`, `spectatorpoint`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);", Statement.RETURN_GENERATED_KEYS);
@@ -130,7 +130,6 @@ public class DBHandler {
             st.setString(7, Utils.serialLocation(ArenaStore.spawnPoint));
             st.setString(8, Utils.serialLocation(ArenaStore.lobbyPoint));
             st.setString(9, Utils.serialLocation(ArenaStore.spectatorPoint));
-            st.executeUpdate();
             
             int affectedRows = st.executeUpdate();
             
@@ -148,8 +147,10 @@ public class DBHandler {
             
             Main.getDB().closeStatement(st);
             loadGame(id);
+            return true;
         } catch (SQLException ex) {
             ex.printStackTrace();
+            return false;
         }
     }
     
