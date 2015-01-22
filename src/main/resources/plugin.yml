@@ -1,7 +1,6 @@
 name: ${project.artifactId}
 version: ${project.version}
 author: RedThirdDivision
-authors: [TheJeterLP, BossLetsPlays]
 
 main: com.redthirddivision.spleef.Main
 

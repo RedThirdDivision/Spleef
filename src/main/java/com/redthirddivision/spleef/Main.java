@@ -16,9 +16,11 @@
 package com.redthirddivision.spleef;
 
 import com.redthirddivision.bukkitgamelib.Minigame;
+import com.redthirddivision.bukkitgamelib.command.CommandManager;
 import com.redthirddivision.bukkitgamelib.database.Database;
 import com.redthirddivision.bukkitgamelib.database.MySQL;
 import com.redthirddivision.bukkitgamelib.database.SQLite;
+import com.redthirddivision.spleef.commands.CreateCommands;
 import com.redthirddivision.spleef.listeners.PlayerBlockEvent;
 import com.redthirddivision.spleef.listeners.PlayerDamageListener;
 import com.redthirddivision.spleef.utils.Config;
@@ -54,6 +56,8 @@ public class Main extends Minigame {
         
         getServer().getPluginManager().registerEvents(new PlayerBlockEvent(), this);
         getServer().getPluginManager().registerEvents(new PlayerDamageListener(), this);
+        
+        getCommandManager().registerClass(CreateCommands.class);
         
         Updater u = new Updater(this, -1, "r3d-spleef");
         u.search();

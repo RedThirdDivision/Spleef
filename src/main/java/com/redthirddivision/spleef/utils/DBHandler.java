@@ -34,11 +34,11 @@ import org.bukkit.Location;
  * @author <a href="http://jpeter.redthirddivision.com">TheJeterLP</a>
  */
 public class DBHandler {
-
+    
     public static void setup() {
         try {
             if (Main.getDB() instanceof MySQL) {
-
+                
                 Main.getDB().executeStatement("CREATE TABLE IF NOT EXISTS `" + Config.SQL_TABLE_PREFIX.getString() + "arenas` ("
                         + "`ID` INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT, "
                         + "`name` varchar(64) NOT NULL, "
@@ -72,7 +72,7 @@ public class DBHandler {
             ex.printStackTrace();
         }
     }
-
+    
     public static Spleef loadGame(int id) {
         try {
             PreparedStatement st = Main.getDB().getPreparedStatement("SELECT * FROM `" + Config.SQL_TABLE_PREFIX.getString() + "arenas` WHERE `id` = ? LIMIT 1;");
@@ -91,7 +91,7 @@ public class DBHandler {
                 Location spectator = Utils.deserialLocation(rs.getString("spectatorpoint"));
                 Main.getDB().closeStatement(st);
                 Main.getDB().closeResultSet(rs);
-
+                
                 Spleef game = new Spleef(id, name, Main.getInstance(), state, new Location[]{min, max}, minplayers, maxplayers, sign, "spleef.join." + name, spawn, lobby, spectator);
                 return game;
             } else {
@@ -102,11 +102,11 @@ public class DBHandler {
             return null;
         }
     }
-
+    
     public static void loadArenasFromDB() {
         try {
             Statement s = Main.getDB().getStatement();
-            ResultSet rs = s.executeQuery("SELECT `ID` FROM `arenas`;");
+            ResultSet rs = s.executeQuery("SELECT `ID` FROM `" + Config.SQL_TABLE_PREFIX.getString() + "arenas`;");
             while (rs.next()) {
                 loadGame(rs.getInt("ID"));
             }
@@ -116,5 +116,41 @@ public class DBHandler {
             ex.printStackTrace();
         }
     }
-
+    
+    public static void createArena() {
+        try {
+            int id = -1;
+            PreparedStatement st = Main.getDB().getConnection().prepareStatement("INSERT INTO `" + Config.SQL_TABLE_PREFIX.getString() + "arenas` (`name`, `min`, `max`, `minplayers`, `maxplayers`, `sign`, `spawnpoint`, `lobbypoint`, `spectatorpoint`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);", Statement.RETURN_GENERATED_KEYS);
+            st.setString(1, ArenaStore.name);
+            st.setString(2, Utils.serialLocation(ArenaStore.sel[0]));
+            st.setString(3, Utils.serialLocation(ArenaStore.sel[1]));
+            st.setInt(4, ArenaStore.minplayers);
+            st.setInt(5, ArenaStore.maxplayers);
+            st.setString(6, Utils.serialLocation(ArenaStore.sign.getLocation()));
+            st.setString(7, Utils.serialLocation(ArenaStore.spawnPoint));
+            st.setString(8, Utils.serialLocation(ArenaStore.lobbyPoint));
+            st.setString(9, Utils.serialLocation(ArenaStore.spectatorPoint));
+            st.executeUpdate();
+            
+            int affectedRows = st.executeUpdate();
+            
+            if (affectedRows == 0) {
+                throw new SQLException("Creating table failed, no rows affected.");
+            }
+            
+            ResultSet generatedKeys = st.getGeneratedKeys();
+            if (generatedKeys.next()) {
+                id = generatedKeys.getInt(1);
+            } else {
+                String sql = Config.USE_MYSQL.getBoolean() ? "MySQL" : "SQLite";
+                throw new SQLException("Creating user failed, no ID obtained. SQL type: " + sql);
+            }
+            
+            Main.getDB().closeStatement(st);
+            loadGame(id);
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+    }
+    
 }
