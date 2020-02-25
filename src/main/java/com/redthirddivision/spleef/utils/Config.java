@@ -36,7 +36,7 @@ public enum Config {
     MYSQL_DATABASE("SQL.MySQLDatabase", "database", "The MySQL database. (Not needed if you use SQLite)"),
     MYSQL_USER("SQL.MySQLUser", "root", "The MySQL user. (Not needed if you use SQLite)"),
     MYSQL_PASSWORD("SQL.MySQLPassword", "root", "The MySQL password. (Not needed if you use SQLite)"),
-    SETTINGS_PLAYER_TOOL("Settings.Tool", Material.DIAMOND_SPADE.toString(), "The item which will be used to dig");
+    SETTINGS_PLAYER_TOOL("Settings.Tool", Material.DIAMOND_SHOVEL.toString(), "The item which will be used to dig");
 
     private final Object value;
     private final String path;

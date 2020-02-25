@@ -100,7 +100,7 @@ public class Spleef extends Game {
             public void run() {
                 for (BlockContainer block : broken) {
                     block.getLoc().getBlock().setType(block.getMat());
-                    block.getLoc().getBlock().setData(block.getData());
+                    block.getLoc().getBlock().setBlockData(block.getData());
                     block.getLoc().getBlock().getState().update(true);
                 }
                 broken.clear();

@@ -5,3 +5,4 @@ author: RedThirdDivision
 main: com.redthirddivision.spleef.Main
 
 depends: [BukkitGameLib]
+api-version: 1.13

@@ -21,6 +21,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.PlayerDeathEvent;
 
 /**
  * <strong>Project:</strong> Spleef <br>
@@ -29,14 +30,18 @@ import org.bukkit.event.entity.EntityDamageEvent;
  * @author <a href="http://jpeter.redthirddivision.com">TheJeterLP</a>
  */
 public class PlayerDamageListener implements Listener {
-
+    
     @EventHandler(ignoreCancelled = true)
     public void onDamage(final EntityDamageEvent e) {
-        if (!(e.getEntity() instanceof Player)) return;
+        if (!(e.getEntity() instanceof Player)) {
+            return;
+        }
         if (e.getCause() == EntityDamageEvent.DamageCause.LAVA || e.getCause() == EntityDamageEvent.DamageCause.FIRE || e.getCause() == EntityDamageEvent.DamageCause.FIRE_TICK) {
             Player p = (Player) e.getEntity();
             Game g = Main.getInstance().getGameManager().getArena(p);
-            if (g == null) return;
+            if (g == null) {
+                return;
+            }
             g.setSpectator(p);
             e.setCancelled(true);
             e.setDamage(0.0);
@@ -44,7 +49,15 @@ public class PlayerDamageListener implements Listener {
             e.setCancelled(true);
             e.setDamage(0.0);
         }
-
     }
-
+    
+    @EventHandler
+    public void onPlayerDeath(PlayerDeathEvent e) {
+        Game g = Main.getInstance().getGameManager().getArena(e.getEntity());
+        if (g == null || !g.isStarted()) {
+            return;
+        }
+        g.removePlayer(e.getEntity());
+    }
+    
 }

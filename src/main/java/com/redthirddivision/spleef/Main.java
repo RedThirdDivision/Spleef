@@ -24,7 +24,6 @@ import com.redthirddivision.spleef.listeners.PlayerBlockEvent;
 import com.redthirddivision.spleef.listeners.PlayerDamageListener;
 import com.redthirddivision.spleef.utils.Config;
 import com.redthirddivision.spleef.utils.DBHandler;
-import de.thejeterlp.bukkit.updater.Updater;
 import java.io.File;
 import java.sql.SQLException;
 
@@ -59,9 +58,6 @@ public class Main extends Minigame {
         getServer().getPluginManager().registerEvents(new PlayerDamageListener(), this);
         
         getCommandManager().registerClass(CreateCommands.class);
-        
-        Updater u = new Updater(this, -1, "r3d-spleef");
-        u.search();
     }
     
     @Override

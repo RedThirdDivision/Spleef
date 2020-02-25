@@ -18,6 +18,7 @@ package com.redthirddivision.spleef.utils;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.data.BlockData;
 
 /**
  * <strong>Project:</strong> Spleef <br>
@@ -29,12 +30,12 @@ public class BlockContainer {
 
     private final Location loc;
     private final Material mat;
-    private final byte data;
+    private final BlockData data;
 
     public BlockContainer(Block b) {
         this.loc = b.getLocation();
         this.mat = b.getType();
-        this.data = b.getData();
+        this.data = b.getBlockData();
     }
 
     public Location getLoc() {
@@ -45,7 +46,7 @@ public class BlockContainer {
         return mat;
     }
 
-    public byte getData() {
+    public BlockData getData() {
         return data;
     }
 
