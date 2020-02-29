@@ -1,8 +1,8 @@
 name: ${project.artifactId}
 version: ${project.version}
-author: RedThirdDivision
+author: Jeter
 
-main: com.redthirddivision.spleef.Main
+main: de.jeter.spleef.Main
 
 depends: [BukkitGameLib]
 api-version: 1.13

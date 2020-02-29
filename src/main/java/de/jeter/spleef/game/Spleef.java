@@ -68,7 +68,9 @@ public class Spleef extends Game {
     public void onArenaStart() {
         for (PlayerData pd : getAlivePlayers()) {
             Location spawnPoint = this.spawn;
-            spawnPoint.setX(r.nextInt(5) + spawnPoint.getBlockX());
+            spawnPoint.setX(r.nextInt(10) + spawnPoint.getBlockX());
+            spawnPoint.setZ(r.nextInt(10) + spawnPoint.getBlockZ());
+           
             pd.getPlayer().teleport(spawnPoint);
             pd.getPlayer().getInventory().addItem(new ItemStack(Material.valueOf(Config.SETTINGS_PLAYER_TOOL.getString())));
             sendMessage(pd.getPlayer(), MessageType.INFO, "Start digging!");

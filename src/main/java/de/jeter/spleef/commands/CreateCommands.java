@@ -56,8 +56,12 @@ public class CreateCommands {
 
     @BaseCommand(command = "createspleef", sender = BaseCommand.Sender.PLAYER, permission = "spleef.admin")
     public CommandResult executeBasic(Player sender, CommandArgs args) {
-        if (create.sendHelp(sender, args)) return CommandResult.SUCCESS;
-        if (args.getLength() != 1) return CommandResult.ERROR;
+        if (create.sendHelp(sender, args)) {
+            return CommandResult.SUCCESS;
+        }
+        if (args.getLength() != 1) {
+            return CommandResult.ERROR;
+        }
 
         if (!ArenaStore.isDefault()) {
             Utils.sendMessage(sender, Utils.MessageType.ERROR, "You have to finish your current arena before you can start a new one!", Main.getInstance());
@@ -71,8 +75,12 @@ public class CreateCommands {
 
     @BaseCommand(command = "createspleef", sender = BaseCommand.Sender.PLAYER, permission = "spleef.admin", subCommand = "set")
     public CommandResult executeSet(Player sender, CommandArgs args) {
-        if (create.sendHelp(sender, args)) return CommandResult.SUCCESS;
-        if (args.getLength() < 1) return CommandResult.ERROR;
+        if (create.sendHelp(sender, args)) {
+            return CommandResult.SUCCESS;
+        }
+        if (args.getLength() < 1) {
+            return CommandResult.ERROR;
+        }
 
         if (ArenaStore.isDefault()) {
             Utils.sendMessage(sender, Utils.MessageType.ERROR, "You have to enter the creation mode first! Use §a/" + args.getBase() + " help§7 to receive help.", Main.getInstance());
@@ -80,15 +88,21 @@ public class CreateCommands {
         }
 
         if (args.getString(0).equalsIgnoreCase("selection")) {
-            if (args.getLength() != 1) return CommandResult.ERROR;
+            if (args.getLength() != 1) {
+                return CommandResult.ERROR;
+            }
 
             Location[] sel = SelectionManager.getSelection(sender);
             ArenaStore.sel = sel;
             Utils.sendMessage(sender, Utils.MessageType.INFO, "Stored the current WorldEdit selection.", Main.getInstance());
             return CommandResult.SUCCESS;
         } else if (args.getString(0).equalsIgnoreCase("minplayers")) {
-            if (args.getLength() != 2) return CommandResult.ERROR;
-            if (!args.isInteger(1)) return CommandResult.NOT_A_NUMBER;
+            if (args.getLength() != 2) {
+                return CommandResult.ERROR;
+            }
+            if (!args.isInteger(1)) {
+                return CommandResult.NOT_A_NUMBER;
+            }
 
             int number = args.getInt(1);
 
@@ -96,9 +110,13 @@ public class CreateCommands {
             Utils.sendMessage(sender, Utils.MessageType.INFO, "Stored the minPlayers.", Main.getInstance());
             return CommandResult.SUCCESS;
         } else if (args.getString(0).equalsIgnoreCase("maxplayers")) {
-            if (args.getLength() != 2) return CommandResult.ERROR;
+            if (args.getLength() != 2) {
+                return CommandResult.ERROR;
+            }
 
-            if (!args.isInteger(1)) return CommandResult.NOT_A_NUMBER;
+            if (!args.isInteger(1)) {
+                return CommandResult.NOT_A_NUMBER;
+            }
 
             int number = args.getInt(1);
 
@@ -106,7 +124,9 @@ public class CreateCommands {
             Utils.sendMessage(sender, Utils.MessageType.INFO, "Stored the maxPlayers.", Main.getInstance());
             return CommandResult.SUCCESS;
         } else if (args.getString(0).equalsIgnoreCase("sign")) {
-            if (args.getLength() != 1) return CommandResult.ERROR;
+            if (args.getLength() != 1) {
+                return CommandResult.ERROR;
+            }
 
             Location looking = Utils.getLocationLooking(sender, 10);
             if (looking == null) {
@@ -124,21 +144,27 @@ public class CreateCommands {
             Utils.sendMessage(sender, Utils.MessageType.INFO, "Stored the sign", Main.getInstance());
             return CommandResult.SUCCESS;
         } else if (args.getString(0).equalsIgnoreCase("lobby")) {
-            if (args.getLength() != 1) return CommandResult.ERROR;
+            if (args.getLength() != 1) {
+                return CommandResult.ERROR;
+            }
 
             Location loc = sender.getLocation();
             ArenaStore.lobbyPoint = loc;
             Utils.sendMessage(sender, Utils.MessageType.INFO, "Stored the lobby.", Main.getInstance());
             return CommandResult.SUCCESS;
         } else if (args.getString(0).equalsIgnoreCase("spawn")) {
-            if (args.getLength() != 1) return CommandResult.ERROR;
+            if (args.getLength() != 1) {
+                return CommandResult.ERROR;
+            }
 
             Location loc = sender.getLocation();
             ArenaStore.spawnPoint = loc;
             Utils.sendMessage(sender, Utils.MessageType.INFO, "Stored the spawn.", Main.getInstance());
             return CommandResult.SUCCESS;
         } else if (args.getString(0).equalsIgnoreCase("spectator")) {
-            if (args.getLength() != 1) return CommandResult.ERROR;
+            if (args.getLength() != 1) {
+                return CommandResult.ERROR;
+            }
 
             Location loc = sender.getLocation();
             ArenaStore.spectatorPoint = loc;
@@ -151,8 +177,12 @@ public class CreateCommands {
 
     @BaseCommand(command = "createspleef", sender = BaseCommand.Sender.PLAYER, permission = "spleef.admin", subCommand = "finish")
     public CommandResult executeFinish(Player sender, CommandArgs args) {
-        if (create.sendHelp(sender, args)) return CommandResult.SUCCESS;
-        if (!args.isEmpty()) return CommandResult.ERROR;
+        if (create.sendHelp(sender, args)) {
+            return CommandResult.SUCCESS;
+        }
+        if (!args.isEmpty()) {
+            return CommandResult.ERROR;
+        }
 
         if (ArenaStore.isDefault()) {
             Utils.sendMessage(sender, Utils.MessageType.ERROR, "You have to enter the creation mode first! Use §a/" + args.getBase() + " help§7 to receive help.", Main.getInstance());
@@ -164,11 +194,8 @@ public class CreateCommands {
             return CommandResult.SUCCESS;
         }
 
-        if (DBHandler.createArena()) {
-            Utils.sendMessage(sender, Utils.MessageType.INFO, "The game has been loaded.", Main.getInstance());
-        } else {
-            Utils.sendMessage(sender, Utils.MessageType.ERROR, "The game could not be loaded. An error ocurred", Main.getInstance());
-        }
+        DBHandler.createArena();
+        Utils.sendMessage(sender, Utils.MessageType.INFO, "The game has been loaded.", Main.getInstance());
 
         ArenaStore.reset();
         return CommandResult.SUCCESS;

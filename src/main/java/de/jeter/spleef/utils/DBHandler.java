@@ -16,15 +16,18 @@
 package de.jeter.spleef.utils;
 
 import de.jeter.bukkitgamelib.Game.ArenaState;
+import de.jeter.bukkitgamelib.database.Database;
 import de.jeter.bukkitgamelib.database.MySQL;
 import de.jeter.bukkitgamelib.database.SQLite;
 import de.jeter.bukkitgamelib.utils.Utils;
 import de.jeter.spleef.Main;
 import de.jeter.spleef.game.Spleef;
+import java.io.File;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 
 /**
@@ -34,12 +37,25 @@ import org.bukkit.Location;
  * @author <a href="http://jpeter.redthirddivision.com">TheJeterLP</a>
  */
 public class DBHandler {
+
+    private static Database db;
     
+    public static Database getDatabase() {
+        return db;
+    }
+
     public static void setup() {
         try {
-            if (Main.getDB() instanceof MySQL) {
-                
-                Main.getDB().executeStatement("CREATE TABLE IF NOT EXISTS `" + Config.SQL_TABLE_PREFIX.getString() + "arenas` ("
+            
+            if (Config.USE_MYSQL.getBoolean()) {
+                db = new MySQL(Config.MYSQL_HOST.getString(), Config.MYSQL_USER.getString(), Config.MYSQL_PASSWORD.getString(), Config.MYSQL_DATABASE.getString(), Config.MYSQL_PORT.getInt());
+            } else {
+                File dbFile = new File(Main.getInstance().getDataFolder(), "database.db");
+                db = new SQLite(dbFile);
+            }
+            
+            if (db instanceof MySQL) {
+                db.executeStatement("CREATE TABLE IF NOT EXISTS `" + Config.SQL_TABLE_PREFIX.getString() + "arenas` ("
                         + "`ID` INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT, "
                         + "`name` varchar(64) NOT NULL, "
                         + "`state` varchar(64) NOT NULL DEFAULT '" + ArenaState.WAITING.toString() + "', "
@@ -53,8 +69,8 @@ public class DBHandler {
                         + "`spectatorpoint` varchar(128) NOT NULL, "
                         + "UNIQUE KEY `name` (`name`)"
                         + ");");
-            } else if (Main.getDB() instanceof SQLite) {
-                Main.getDB().executeStatement("CREATE TABLE IF NOT EXISTS `" + Config.SQL_TABLE_PREFIX.getString() + "arenas` ("
+            } else if (db instanceof SQLite) {
+                db.executeStatement("CREATE TABLE IF NOT EXISTS `" + Config.SQL_TABLE_PREFIX.getString() + "arenas` ("
                         + "`ID` INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, "
                         + "`name` varchar(64) NOT NULL, "
                         + "`state` varchar(64) NOT NULL DEFAULT '" + ArenaState.WAITING.toString() + "', "
@@ -72,12 +88,13 @@ public class DBHandler {
             ex.printStackTrace();
         }
     }
-    
-    public static Spleef loadGame(int id) {
+
+    private static Spleef loadGame(int id) {
         try {
-            PreparedStatement st = Main.getDB().getPreparedStatement("SELECT * FROM `" + Config.SQL_TABLE_PREFIX.getString() + "arenas` WHERE `id` = ? LIMIT 1;");
-            st.setInt(1, id);
-            ResultSet rs = st.executeQuery();
+            PreparedStatement ps = db.getPreparedStatement("SELECT * FROM " + Config.SQL_TABLE_PREFIX.getString() + "arenas WHERE ID = ?;");
+            ps.setInt(1, id);
+            ResultSet rs = ps.executeQuery();
+            Spleef game = null;
             if (rs.next()) {
                 String name = rs.getString("name");
                 ArenaState state = ArenaState.valueOf(rs.getString("state").toUpperCase());
@@ -89,69 +106,98 @@ public class DBHandler {
                 Location spawn = Utils.deserialLocation(rs.getString("spawnpoint"));
                 Location lobby = Utils.deserialLocation(rs.getString("lobbypoint"));
                 Location spectator = Utils.deserialLocation(rs.getString("spectatorpoint"));
-                Main.getDB().closeStatement(st);
-                Main.getDB().closeResultSet(rs);
-                
-                Spleef game = new Spleef(id, name, Main.getInstance(), state, new Location[]{min, max}, minplayers, maxplayers, sign, "spleef.join." + name, spawn, lobby, spectator);
-                return game;
-            } else {
-                return null;
+
+                game = new Spleef(id, name, Main.getInstance(), state, new Location[]{min, max}, minplayers, maxplayers, sign, "spleef.join." + name, spawn, lobby, spectator);
             }
+            db.closeResultSet(rs);
+            db.closeStatement(ps);
+            return game;
         } catch (SQLException ex) {
             ex.printStackTrace();
             return null;
         }
     }
-    
+
+    private static Spleef loadGame(ResultSet rs) {
+        try {
+            int id = rs.getInt("ID");
+            String name = rs.getString("name");
+            ArenaState state = ArenaState.valueOf(rs.getString("state").toUpperCase());
+            Location min = Utils.deserialLocation(rs.getString("min"));
+            Location max = Utils.deserialLocation(rs.getString("max"));
+            int minplayers = rs.getInt("minplayers");
+            int maxplayers = rs.getInt("maxplayers");
+            Location sign = Utils.deserialLocation(rs.getString("sign"));
+            Location spawn = Utils.deserialLocation(rs.getString("spawnpoint"));
+            Location lobby = Utils.deserialLocation(rs.getString("lobbypoint"));
+            Location spectator = Utils.deserialLocation(rs.getString("spectatorpoint"));
+
+            Spleef game = new Spleef(id, name, Main.getInstance(), state, new Location[]{min, max}, minplayers, maxplayers, sign, "spleef.join." + name, spawn, lobby, spectator);
+            Main.getInstance().getLogger().info("Loaded arena " + game.getID() + " - " + game.getName());
+            return game;
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            return null;
+        }
+    }
+
     public static void loadArenasFromDB() {
-        try {
-            Statement s = Main.getDB().getStatement();
-            ResultSet rs = s.executeQuery("SELECT `ID` FROM `" + Config.SQL_TABLE_PREFIX.getString() + "arenas`;");
-            while (rs.next()) {
-                loadGame(rs.getInt("ID"));
+        Main.getInstance().getServer().getScheduler().runTaskAsynchronously(Main.getInstance(), new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Statement s = db.getStatement();
+                    ResultSet rs = s.executeQuery("SELECT * FROM " + Config.SQL_TABLE_PREFIX.getString() + "arenas;");
+                    while (rs.next()) {
+                        loadGame(rs);
+                    }
+                    db.closeStatement(s);
+                    db.closeResultSet(rs);
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
             }
-            Main.getDB().closeStatement(s);
-            Main.getDB().closeResultSet(rs);
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
+        });
     }
-    
-    public static boolean createArena() {
-        try {
-            int id = -1;
-            PreparedStatement st = Main.getDB().getConnection().prepareStatement("INSERT INTO `" + Config.SQL_TABLE_PREFIX.getString() + "arenas` (`name`, `min`, `max`, `minplayers`, `maxplayers`, `sign`, `spawnpoint`, `lobbypoint`, `spectatorpoint`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);", Statement.RETURN_GENERATED_KEYS);
-            st.setString(1, ArenaStore.name);
-            st.setString(2, Utils.serialLocation(ArenaStore.sel[0]));
-            st.setString(3, Utils.serialLocation(ArenaStore.sel[1]));
-            st.setInt(4, ArenaStore.minplayers);
-            st.setInt(5, ArenaStore.maxplayers);
-            st.setString(6, Utils.serialLocation(ArenaStore.sign.getLocation()));
-            st.setString(7, Utils.serialLocation(ArenaStore.spawnPoint));
-            st.setString(8, Utils.serialLocation(ArenaStore.lobbyPoint));
-            st.setString(9, Utils.serialLocation(ArenaStore.spectatorPoint));
-            
-            int affectedRows = st.executeUpdate();
-            
-            if (affectedRows == 0) {
-                throw new SQLException("Creating table failed, no rows affected.");
+
+    public static void createArena() {
+        Bukkit.getScheduler().runTaskAsynchronously(Main.getInstance(), new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    int id = -1;
+                    PreparedStatement st = db.getConnection().prepareStatement("INSERT INTO `" + Config.SQL_TABLE_PREFIX.getString() + "arenas` (`name`, `min`, `max`, `minplayers`, `maxplayers`, `sign`, `spawnpoint`, `lobbypoint`, `spectatorpoint`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);", Statement.RETURN_GENERATED_KEYS);
+                    st.setString(1, ArenaStore.name);
+                    st.setString(2, Utils.serialLocation(ArenaStore.sel[0]));
+                    st.setString(3, Utils.serialLocation(ArenaStore.sel[1]));
+                    st.setInt(4, ArenaStore.minplayers);
+                    st.setInt(5, ArenaStore.maxplayers);
+                    st.setString(6, Utils.serialLocation(ArenaStore.sign.getLocation()));
+                    st.setString(7, Utils.serialLocation(ArenaStore.spawnPoint));
+                    st.setString(8, Utils.serialLocation(ArenaStore.lobbyPoint));
+                    st.setString(9, Utils.serialLocation(ArenaStore.spectatorPoint));
+
+                    int affectedRows = st.executeUpdate();
+
+                    if (affectedRows == 0) {
+                        throw new SQLException("Creating table failed, no rows affected.");
+                    }
+
+                    ResultSet generatedKeys = st.getGeneratedKeys();
+                    if (generatedKeys.next()) {
+                        id = generatedKeys.getInt(1);
+                    } else {
+                        String sql = Config.USE_MYSQL.getBoolean() ? "MySQL" : "SQLite";
+                        throw new SQLException("Creating user failed, no ID obtained. SQL type: " + sql);
+                    }
+
+                    db.closeStatement(st);
+                    loadGame(id);
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
             }
-            
-            ResultSet generatedKeys = st.getGeneratedKeys();
-            if (generatedKeys.next()) {
-                id = generatedKeys.getInt(1);
-            } else {
-                String sql = Config.USE_MYSQL.getBoolean() ? "MySQL" : "SQLite";
-                throw new SQLException("Creating user failed, no ID obtained. SQL type: " + sql);
-            }
-            
-            Main.getDB().closeStatement(st);
-            loadGame(id);
-            return true;
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-            return false;
-        }
+        });
     }
-    
+
 }

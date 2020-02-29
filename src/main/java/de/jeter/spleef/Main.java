@@ -16,15 +16,11 @@
 package de.jeter.spleef;
 
 import de.jeter.bukkitgamelib.Minigame;
-import de.jeter.bukkitgamelib.database.Database;
-import de.jeter.bukkitgamelib.database.MySQL;
-import de.jeter.bukkitgamelib.database.SQLite;
 import de.jeter.spleef.commands.CreateCommands;
 import de.jeter.spleef.listeners.PlayerBlockEvent;
 import de.jeter.spleef.listeners.PlayerDamageListener;
 import de.jeter.spleef.utils.Config;
 import de.jeter.spleef.utils.DBHandler;
-import java.io.File;
 import java.sql.SQLException;
 
 /**
@@ -36,21 +32,14 @@ import java.sql.SQLException;
 public class Main extends Minigame {
     
     private static Main INSTANCE;
-    private static Database db;
+   
     
     @Override
     public void onPluginStart() {
         INSTANCE = this;
         
         Config.load(this, "config.yml");
-        
-        if (Config.USE_MYSQL.getBoolean()) {
-            db = new MySQL(Config.MYSQL_HOST.getString(), Config.MYSQL_USER.getString(), Config.MYSQL_PASSWORD.getString(), Config.MYSQL_DATABASE.getString(), Config.MYSQL_PORT.getInt());
-        } else {
-            File dbFile = new File(getDataFolder(), "database.db");
-            db = new SQLite(dbFile);
-        }
-        
+                       
         DBHandler.setup();
         DBHandler.loadArenasFromDB();
         
@@ -63,7 +52,7 @@ public class Main extends Minigame {
     @Override
     public void onPluginStop() {
         try {
-            db.closeConnection();
+            DBHandler.getDatabase().closeConnection();
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
@@ -71,10 +60,5 @@ public class Main extends Minigame {
     
     public static Main getInstance() {
         return INSTANCE;
-    }
-    
-    public static Database getDB() {
-        return db;
-    }
-    
+    }   
 }
