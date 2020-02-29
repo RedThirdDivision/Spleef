@@ -13,14 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.redthirddivision.spleef.utils;
+package de.jeter.spleef.utils;
 
-import com.redthirddivision.bukkitgamelib.Game.ArenaState;
-import com.redthirddivision.bukkitgamelib.database.MySQL;
-import com.redthirddivision.bukkitgamelib.database.SQLite;
-import com.redthirddivision.bukkitgamelib.utils.Utils;
-import com.redthirddivision.spleef.Main;
-import com.redthirddivision.spleef.game.Spleef;
+import de.jeter.bukkitgamelib.Game.ArenaState;
+import de.jeter.bukkitgamelib.database.MySQL;
+import de.jeter.bukkitgamelib.database.SQLite;
+import de.jeter.bukkitgamelib.utils.Utils;
+import de.jeter.spleef.Main;
+import de.jeter.spleef.game.Spleef;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;

@@ -13,13 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.redthirddivision.spleef.listeners;
+package de.jeter.spleef.listeners;
 
-import com.redthirddivision.bukkitgamelib.Game;
-import com.redthirddivision.bukkitgamelib.utils.Utils;
-import com.redthirddivision.spleef.Main;
-import com.redthirddivision.spleef.game.Spleef;
-import com.redthirddivision.spleef.utils.Config;
+import de.jeter.bukkitgamelib.Game;
+import de.jeter.bukkitgamelib.utils.Utils;
+import de.jeter.spleef.Main;
+import de.jeter.spleef.game.Spleef;
+import de.jeter.spleef.utils.Config;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;

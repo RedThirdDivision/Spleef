@@ -12,7 +12,7 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-package com.redthirddivision.spleef.utils;
+package de.jeter.spleef.utils;
 
 import com.google.common.base.Joiner;
 import java.io.File;

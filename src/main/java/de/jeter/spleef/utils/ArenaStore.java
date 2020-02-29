@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.redthirddivision.spleef.utils;
+package de.jeter.spleef.utils;
 
 import org.bukkit.Location;
 import org.bukkit.block.Sign;

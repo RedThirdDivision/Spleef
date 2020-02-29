@@ -13,15 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.redthirddivision.spleef.game;
+package de.jeter.spleef.game;
 
-import com.redthirddivision.bukkitgamelib.Game;
-import com.redthirddivision.bukkitgamelib.Main;
-import com.redthirddivision.bukkitgamelib.Minigame;
-import com.redthirddivision.bukkitgamelib.arena.PlayerData;
-import com.redthirddivision.bukkitgamelib.utils.Utils.MessageType;
-import com.redthirddivision.spleef.utils.BlockContainer;
-import com.redthirddivision.spleef.utils.Config;
+import de.jeter.bukkitgamelib.Game;
+import de.jeter.bukkitgamelib.Main;
+import de.jeter.bukkitgamelib.Minigame;
+import de.jeter.bukkitgamelib.arena.PlayerData;
+import de.jeter.bukkitgamelib.utils.Utils.MessageType;
+import de.jeter.spleef.utils.BlockContainer;
+import de.jeter.spleef.utils.Config;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;

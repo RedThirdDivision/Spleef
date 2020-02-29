@@ -13,17 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.redthirddivision.spleef;
+package de.jeter.spleef;
 
-import com.redthirddivision.bukkitgamelib.Minigame;
-import com.redthirddivision.bukkitgamelib.database.Database;
-import com.redthirddivision.bukkitgamelib.database.MySQL;
-import com.redthirddivision.bukkitgamelib.database.SQLite;
-import com.redthirddivision.spleef.commands.CreateCommands;
-import com.redthirddivision.spleef.listeners.PlayerBlockEvent;
-import com.redthirddivision.spleef.listeners.PlayerDamageListener;
-import com.redthirddivision.spleef.utils.Config;
-import com.redthirddivision.spleef.utils.DBHandler;
+import de.jeter.bukkitgamelib.Minigame;
+import de.jeter.bukkitgamelib.database.Database;
+import de.jeter.bukkitgamelib.database.MySQL;
+import de.jeter.bukkitgamelib.database.SQLite;
+import de.jeter.spleef.commands.CreateCommands;
+import de.jeter.spleef.listeners.PlayerBlockEvent;
+import de.jeter.spleef.listeners.PlayerDamageListener;
+import de.jeter.spleef.utils.Config;
+import de.jeter.spleef.utils.DBHandler;
 import java.io.File;
 import java.sql.SQLException;
 
@@ -31,7 +31,7 @@ import java.sql.SQLException;
  * <strong>Project:</strong> Spleef <br>
  * <strong>File:</strong> Main.java
  *
- * @author <a href="http://jpeter.redthirddivision.com">TheJeterLP</a>
+ * @author <a href="https://jeter.de">TheJeterLP</a>
  */
 public class Main extends Minigame {
     

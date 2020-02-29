@@ -13,18 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.redthirddivision.spleef.commands;
+package de.jeter.spleef.commands;
 
-import com.redthirddivision.bukkitgamelib.command.BaseCommand;
-import com.redthirddivision.bukkitgamelib.command.CommandArgs;
-import com.redthirddivision.bukkitgamelib.command.CommandHandler;
-import com.redthirddivision.bukkitgamelib.command.CommandResult;
-import com.redthirddivision.bukkitgamelib.command.HelpPage;
-import com.redthirddivision.bukkitgamelib.utils.SelectionManager;
-import com.redthirddivision.bukkitgamelib.utils.Utils;
-import com.redthirddivision.spleef.Main;
-import com.redthirddivision.spleef.utils.ArenaStore;
-import com.redthirddivision.spleef.utils.DBHandler;
+import de.jeter.bukkitgamelib.command.BaseCommand;
+import de.jeter.bukkitgamelib.command.CommandArgs;
+import de.jeter.bukkitgamelib.command.CommandHandler;
+import de.jeter.bukkitgamelib.command.CommandResult;
+import de.jeter.bukkitgamelib.command.HelpPage;
+import de.jeter.bukkitgamelib.utils.SelectionManager;
+import de.jeter.bukkitgamelib.utils.Utils;
+import de.jeter.spleef.Main;
+import de.jeter.spleef.utils.ArenaStore;
+import de.jeter.spleef.utils.DBHandler;
 import org.bukkit.Location;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
@@ -33,7 +33,7 @@ import org.bukkit.entity.Player;
  * <strong>Project:</strong> Spleef <br>
  * <strong>File:</strong> CreateCommands.java
  *
- * @author <a href="http://jpeter.redthirddivision.com">TheJeterLP</a>
+ * @author <a href="https://jeter.de">TheJeterLP</a>
  */
 @CommandHandler
 public class CreateCommands {
