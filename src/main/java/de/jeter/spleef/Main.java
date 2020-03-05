@@ -17,10 +17,12 @@ package de.jeter.spleef;
 
 import de.jeter.bukkitgamelib.Minigame;
 import de.jeter.spleef.commands.CreateCommands;
+import de.jeter.spleef.commands.SpleefCommands;
 import de.jeter.spleef.listeners.PlayerBlockEvent;
 import de.jeter.spleef.listeners.PlayerDamageListener;
 import de.jeter.spleef.utils.Config;
 import de.jeter.spleef.utils.DBHandler;
+import de.jeter.spleef.utils.Locales;
 import java.sql.SQLException;
 
 /**
@@ -39,6 +41,7 @@ public class Main extends Minigame {
         INSTANCE = this;
         
         Config.load(this, "config.yml");
+        Locales.load();
                        
         DBHandler.setup();
         DBHandler.loadArenasFromDB();
@@ -47,6 +50,7 @@ public class Main extends Minigame {
         getServer().getPluginManager().registerEvents(new PlayerDamageListener(), this);
         
         getCommandManager().registerClass(CreateCommands.class);
+        getCommandManager().registerClass(SpleefCommands.class);
     }
     
     @Override

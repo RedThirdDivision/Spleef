@@ -19,7 +19,7 @@ import de.jeter.bukkitgamelib.command.BaseCommand;
 import de.jeter.bukkitgamelib.command.CommandArgs;
 import de.jeter.bukkitgamelib.command.CommandHandler;
 import de.jeter.bukkitgamelib.command.CommandResult;
-import de.jeter.bukkitgamelib.command.HelpPage;
+import de.jeter.bukkitgamelib.command.Sender;
 import de.jeter.bukkitgamelib.utils.SelectionManager;
 import de.jeter.bukkitgamelib.utils.Utils;
 import de.jeter.spleef.Main;
@@ -38,27 +38,8 @@ import org.bukkit.entity.Player;
 @CommandHandler
 public class CreateCommands {
 
-    private final HelpPage create = new HelpPage("createspleef");
-
-    public CreateCommands() {
-        create.addPage(" <name>", "Start the creator mode with the given arena name.");
-        create.addPage(" set selection", "Sets the selection to the current worldEdit selection.");
-        create.addPage(" set maxplayers <number>", "Sets the maxPlayer to <number>");
-        create.addPage(" set minplayers <number>", "Sets the minPlayer to <number>");
-        create.addPage(" set sign", "Sets the sign");
-        create.addPage(" set lobby", "Sets the lobby to your location");
-        create.addPage(" set spawn", "Sets the spawn to your location");
-        create.addPage(" set spectator", "Sets the spectator to your location");
-        create.addPage(" finish", "Finishes the current arena");
-
-        create.prepare();
-    }
-
-    @BaseCommand(command = "createspleef", sender = BaseCommand.Sender.PLAYER, permission = "spleef.admin")
-    public CommandResult executeBasic(Player sender, CommandArgs args) {
-        if (create.sendHelp(sender, args)) {
-            return CommandResult.SUCCESS;
-        }
+    @BaseCommand(command = "createspleef", sender = Sender.PLAYER, permission = "spleef.admin", helpArguments = {"<name>", "set selection", "set maxplayers <number>", "set minplayers <number>", "set sign", "set lobby", "set spawn", "set spectator", "finish"})
+    public CommandResult executeBasic(Player sender, CommandArgs args) {        
         if (args.getLength() != 1) {
             return CommandResult.ERROR;
         }
@@ -73,11 +54,8 @@ public class CreateCommands {
         return CommandResult.SUCCESS;
     }
 
-    @BaseCommand(command = "createspleef", sender = BaseCommand.Sender.PLAYER, permission = "spleef.admin", subCommand = "set")
-    public CommandResult executeSet(Player sender, CommandArgs args) {
-        if (create.sendHelp(sender, args)) {
-            return CommandResult.SUCCESS;
-        }
+    @BaseCommand(command = "createspleef", sender = Sender.PLAYER, permission = "spleef.admin", subCommand = "set")
+    public CommandResult executeSet(Player sender, CommandArgs args) {       
         if (args.getLength() < 1) {
             return CommandResult.ERROR;
         }
@@ -175,11 +153,8 @@ public class CreateCommands {
         }
     }
 
-    @BaseCommand(command = "createspleef", sender = BaseCommand.Sender.PLAYER, permission = "spleef.admin", subCommand = "finish")
-    public CommandResult executeFinish(Player sender, CommandArgs args) {
-        if (create.sendHelp(sender, args)) {
-            return CommandResult.SUCCESS;
-        }
+    @BaseCommand(command = "createspleef", sender = Sender.PLAYER, permission = "spleef.admin", subCommand = "finish")
+    public CommandResult executeFinish(Player sender, CommandArgs args) {       
         if (!args.isEmpty()) {
             return CommandResult.ERROR;
         }

@@ -39,14 +39,13 @@ import org.bukkit.inventory.ItemStack;
  */
 public class Spleef extends Game {
 
-    private final Location spawn, lobby, spectator;
+    private final Location spawn, spectator;
     private final Random r = new Random();
     private final List<BlockContainer> broken = new ArrayList<>();
 
-    public Spleef(int id, String name, Minigame owner, ArenaState state, Location[] selection, int minplayers, int maxplayers, Location sign, String joinPermission, Location spawn, Location lobby, Location spectator) {
+    public Spleef(int id, String name, Minigame owner, ArenaState state, Location[] selection, int minplayers, int maxplayers, Location sign, String joinPermission, Location spawn, Location spectator) {
         super(id, name, owner, state, selection, minplayers, maxplayers, sign, joinPermission);
         this.spawn = spawn;
-        this.lobby = lobby;
         this.spectator = spectator;
     }
 
@@ -56,7 +55,6 @@ public class Spleef extends Game {
 
     @Override
     public void onPlayerRemoveFromArena(Player p) {
-        p.teleport(lobby);
     }
 
     @Override
@@ -78,10 +76,7 @@ public class Spleef extends Game {
     }
 
     @Override
-    public void onArenaStop() {
-        for (PlayerData pd : getAllDatas()) {
-            pd.getPlayer().teleport(lobby);
-        }
+    public void onArenaStop() {        
         resetBlocks();
     }
 
